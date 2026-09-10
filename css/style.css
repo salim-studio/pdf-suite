@@ -28,7 +28,7 @@ header.nav{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px so
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border:1px solid #e2e8f0;transition:.15s}
 .card:hover{transform:translateY(-3px)}
-.card h3{margin:8px 0;font-size:17px}
+.card h3{margin:8px 0;font-size:17px;text-wrap:balance}
 .card p{color:var(--muted);font-size:14px;line-height:1.7;min-height:44px}
 .cat-ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:#eef2ff}
 .tile{flex:none;border-radius:23%;filter:drop-shadow(0 4px 10px rgba(2,6,23,.28))}

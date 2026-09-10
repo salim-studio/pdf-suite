@@ -40,12 +40,13 @@ function render(){
  });
  let html='',last='';
  items.forEach(t=>{
-  if(t.c!==last){last=t.c;const c=CATS.find(x=>x.id===t.c);html+=`<h3 style="margin:22px 0 10px">${L==='ar'?c.ar:c.en}</h3><div class="grid">`}
+  if(t.c!==last){if(last)html+='</div>';last=t.c;const c=CATS.find(x=>x.id===t.c);html+=`<h3 style="margin:22px 0 10px;display:flex;gap:10px;align-items:center">${MacIcons.tile(c.id,MacIcons.cat(c.id),34)}<span>${L==='ar'?c.ar:c.en}</span></h3><div class="grid">`}
   const name=L==='ar'?t.ar:t.en,d=L==='ar'?t.arD:t.enD;
   const pill=t.fn?`<span class="pill ok">⚡ ${T('working')}</span>`:`<span class="pill">${T('demo')}</span>`;
-  html+=`<a class="card" href="tool.html?tool=${t.t}"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px">${MacIcons.tile(t.c,MacIcons.glyphFor(t),40)}<h3 style="margin:0">${name}</h3></div><p>${d}</p>${pill}${t.badge?` <span class="pill new">${t.badge}</span>`:''}</a>`;
+  html+=`<a class="card" href="tool.html?tool=${t.t}"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px">${MacIcons.tile(t.c,MacIcons.glyphFor(t),40)}<h3 style="margin:0;flex:1;min-width:0">${name}</h3></div><p>${d}</p>${pill}${t.badge?` <span class="pill new">${t.badge}</span>`:''}</a>`;
  });
- list.innerHTML=html+'</div>'||'<p>—</p>';
+ if(items.length)html+='</div>';
+ list.innerHTML=html||'<p>—</p>';
 }
 q.oninput=render;renderCats();render();
 </script>
