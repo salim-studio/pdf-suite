@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html id="htmlRoot">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tool — PDF Suite</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="js/i18n.js"></script><script src="js/tools-data.js"></script><script src="js/icons.js"></script><script src="js/engine.js"></script>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+<a class="logo" href="index.html">PDF<span>Suite</span></a>
+<div class="navlinks"><a href="tools.html">← <span data-i="back">رجوع</span></a>
+<button class="langbtn" onclick="setLang(getLang()==='ar'?'en':'ar')" id="langBtn">EN</button></div>
+</div></header>
+<div class="wrap"><section class="section">
+<div id="head"></div>
+<div id="serverNotice" class="notice" style="display:none;margin:12px 0"></div>
+<div class="drop" id="drop"><b data-i="dropTitle">اسحب الملفات هنا أو اضغط للاختيار</b><br><small data-i="dropSub"></small>
+<input type="file" id="file" multiple hidden></div>
+<div class="filelist" id="flist"></div>
+<div class="opts" id="opts"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button class="btn" id="go" data-i="process">تنفيذ</button>
+<button class="btn ghost" id="rs" data-i="reset">إعادة</button>
+</div>
+<div class="result" id="res"></div>
+</section></div>
+<footer><div class="wrap"><span data-i="footerNote"></span></div></footer>
+<script>
+const L=getLang();document.getElementById('htmlRoot').lang=L;document.getElementById('htmlRoot').dir=I18N[L].dir;
+document.querySelectorAll('[data-i]').forEach(e=>e.textContent=T(e.dataset.i));
+langBtn.textContent=I18N[L].langBtn;
+const slug=new URLSearchParams(location.search).get('tool');
+const tool=TOOLS.find(t=>t.t===slug)||TOOLS[0];
+if(['edit-pdf','add-text-to-pdf','annotate-pdf','add-images-to-pdf','add-shapes-to-pdf','sign-pdf'].includes(tool.t)){location.replace('edit-pdf.html?tool='+tool.t)}
+document.title=(L==='ar'?tool.ar:tool.en)+' — PDF Suite';
+head.innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin-bottom:6px">${MacIcons.tile(tool.c,MacIcons.glyphFor(tool),56)}<div><span class="pill">${(CATS.find(c=>c.id===tool.c)[L])}</span>
+<h2 style="margin:6px 0">${L==='ar'?tool.ar:tool.en}</h2></div></div><p class="sub">${L==='ar'?tool.arD:tool.enD}</p>
+${tool.fn?`<span class="pill ok">⚡ ${T('working')}</span>`:`<span class="pill">${T('demo')}</span>`}${tool.badge?` <span class="pill new">${tool.badge}</span>`:''}`;
+if(!tool.fn){serverNotice.style.display='block';serverNotice.textContent=T('needServer')}
+let files=[];
+const drop=document.getElementById('drop'),fi=document.getElementById('file');
+(function(){const A={ocr:'.pdf,.png,.jpg,.jpeg',translate:'.pdf',office2pdf:'.docx',sheet2pdf:'.xlsx,.xls,.csv',ppt2pdf:'.pptx',pdf2docx:'.pdf',pdf2sheet:'.pdf',pdf2pptx:'.pdf',pdf2html:'.pdf',file2pdf:'.tex,.xml,.json,.txt,.md,.js,.py,.java,.c,.cpp,.html,.css'};if(tool.fn&&A[tool.fn])fi.accept=A[tool.fn]})();
+drop.onclick=()=>fi.click();
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',x=>{files=[...files,...x.dataTransfer.files];renderF()});
+fi.onchange=()=>{files=[...files,...fi.files];renderF()};
+function renderF(){flist.innerHTML=files.map((f,i)=>`<div class="fileitem"><span>${i+1}. ${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</span><a href="#" data-i="${i}" onclick="rm(${i});return false">✕</a></div>`).join('')}
+window.rm=i=>{files.splice(i,1);renderF()};
+// per-tool options
+function opt(html){opts.innerHTML=html}
+const R= L==='ar'?'مثال: 1-3,5 (فارغ = الكل)':'e.g. 1-3,5 (empty = all)';
+if(['split','extract','remove','rotate','reorder','organize','copyRange'].includes(tool.fn)||['split-pdf','extract-pages-from-pdf','remove-pages-from-pdf','rotate-pdf','split-pdf-by-size','split-pdf-pages-in-half','organize-pdf','reverse-pdf'].includes(tool.t)){
+ opt(`<label>${L==='ar'?'الصفحات':'Pages'} <input id="o_ranges" placeholder="${R}" style="width:180px"></label>
+ ${tool.fn==='rotate'||tool.t==='rotate-pdf'?`<label>${L==='ar'?'الزاوية':'Angle'}<select id="o_deg"><option value="90">90°</option><option value="-90">-90°</option><option value="180">180°</option></select></label>`:''}
+ ${tool.t==='organize-pdf'?`<label>${L==='ar'?'ترتيب جديد (مثال 3,1,2)':'New order (e.g. 3,1,2)'}<input id="o_ranges" placeholder="3,1,2" style="width:140px"></label>`:''}`);
+}
+else if(tool.fn==='ocr'){opt(`<label>${L==='ar'?'لغة النص':'OCR language'}<select id="o_lang"><option value="eng+ara">العربية + English</option><option value="eng">English</option><option value="ara">العربية</option><option value="fra">Français</option><option value="spa">Español</option><option value="deu">Deutsch</option><option value="ita">Italiano</option><option value="por">Português</option><option value="rus">Русский</option><option value="nld">Nederlands</option></select></label><span class="pill">⚡ Tesseract.js — ${L==='ar'?'يعمل محليا بدون رفع':'runs locally, no upload'}</span>`)}
+else if(tool.fn==='translate'){const defT=L==='ar'?'ar':'en';const TL=[['en','English'],['ar','العربية'],['fr','Français'],['es','Español'],['de','Deutsch'],['it','Italiano'],['pt','Português'],['nl','Nederlands'],['ru','Русский'],['tr','Türkçe'],['ur','اردو'],['fa','فارسی']];opt(`<label>${L==='ar'?'الترجمة إلى':'Translate to'}<select id="o_tgt">${TL.map(x=>`<option value="${x[0]}"${x[0]===defT?' selected':''}>${x[1]}</option>`).join('')}</select></label><span class="pill">⚡ ${L==='ar'?'المصدر يُكتشف تلقائيًا (فرنسي، إسباني، ألماني، عربي…) — خدمة مجانية':'Source auto-detected (fr, es, de, ar…) — free service'}</span>`)}
+else if(['office2pdf','sheet2pdf','ppt2pdf'].includes(tool.fn)){opt(`<span class="pill">📄 ${L==='ar'?'تحويل حقيقي داخل المتصفح — قد يختلف التنسيق عن الأصل':'Real in-browser conversion — formatting may differ from original'}</span>`)}
+else if(tool.fn==='pdf2sheet'){opt(`<label>Output<select id="o_sheetfmt"><option value="xlsx">XLSX</option><option value="csv">CSV</option></select></label>`)}
+else if(['pdf2docx','pdf2pptx','pdf2html'].includes(tool.fn)){opt(`<span class="pill">📄 ${L==='ar'?'تحويل حقيقي داخل المتصفح':'Real in-browser conversion'}</span>`)}
+else if(tool.fn==='md2pdf'){opt(`<label style="flex:1">Markdown<textarea id="o_text" rows="8" style="width:100%" placeholder="# Title&#10;- item"></textarea></label>`)}
+else if(tool.fn==='html2pdf'){opt(`<label style="flex:1">HTML<textarea id="o_html" rows="8" style="width:100%" placeholder="<h1>Hello</h1>"></textarea></label>`)}
+else if(tool.fn==='file2pdf'){opt(`<span class="pill">📄 ${L==='ar'?'ارفع ملف النص/الكود وسيُحوَّل إلى PDF':'Upload the source file — converted to PDF'}</span>`)}
+else if(tool.fn==='filter'){opt(`<span class="pill">🎨 ${L==='ar'?'فلترة حقيقية داخل المتصفح (رمادي/عكس/تباين)':'Real in-browser filter'}</span>`)}
+else if(tool.fn==='crop'||tool.t==='clean-scan-margins'){opt(`<label>${L==='ar'?'الهامش %':'Margin %'}<input id="o_margin" type="number" value="8" min="0" max="40"></label>`)}
+else if(tool.fn==='compress'||['compress-pdf','optimize-web-pdf','reduce-scan-size','flatten-pdf'].includes(tool.t)){opt(`<span class="pill">🗜️ ${L==='ar'?'إعادة حفظ مضغوطة (object streams)':'Re-save with object streams'}</span>`)}
+else if(tool.fn==='pdf2images'||tool.t.startsWith('pdf-to-')){opt(`<label>Format<select id="o_fmt"><option value="png">PNG</option><option value="jpeg">JPG</option></select></label><label>Quality<select id="o_q"><option value="2">High</option><option value="1.5">Medium</option><option value="1">Low</option></select></label>`)}
+else if(tool.fn==='numbers'){opt(`<span class="pill">${L==='ar'?'سيتم ترقيم كل الصفحات أسفل المنتصف':'Numbers added bottom-center'}</span>`)}
+else if(tool.fn==='meta'){opt(`<label>Title<input id="o_title"></label><label>Author<input id="o_author"></label>`)}
+else if(tool.fn==='watermark'){opt(`<label>${L==='ar'?'نص العلامة':'Watermark text'}<input id="o_wm" value="PDF Suite"></label>`)}
+else if(tool.fn==='text2pdf'){opt(`<label style="flex:1">${L==='ar'?'الصق النص / الكود هنا':'Paste text / code here'}<textarea id="o_text" rows="6" style="width:100%"></textarea></label>`)}
+else if(tool.t==='text-to-pdf'||tool.t==='source-code-to-pdf'){opt(`<label style="flex:1">Text<textarea id="o_text" rows="6" style="width:100%"></textarea></label>`)}
+rs.onclick=()=>{files=[];flist.innerHTML='';res.innerHTML=''};
+go.onclick=async()=>{
+ try{
+  const g=id=>document.getElementById(id)?.value;
+  const prog=m=>{res.innerHTML='⏳ '+esc(String(m))};
+  const showTxt=t=>{res.innerHTML=`<pre style="white-space:pre-wrap;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;max-height:320px;overflow:auto">${esc(t.slice(0,3000))}</pre>`};
+  if(tool.t==='text-to-pdf'||tool.t==='source-code-to-pdf'||tool.fn==='text2pdf'){const b=await Engine.text2pdf(document.getElementById('o_text').value||'Hello');dl(b,tool.t+'.pdf');return}
+  if(tool.fn==='md2pdf'){const b=await Engine.mdToPdf(document.getElementById('o_text').value||'# Hello',prog);dl(b,tool.t+'.pdf');return}
+  if(tool.fn==='html2pdf'){const b=await Engine.rawHtmlToPdf(document.getElementById('o_html').value||'<h1>Hello</h1>',prog);dl(b,tool.t+'.pdf');return}
+  if(!files.length)return alert(L==='ar'?'اختر ملفا أولا':'Choose a file first');
+  res.innerHTML=L==='ar'?'⏳ جارٍ المعالجة داخل متصفحك…':'⏳ Processing in your browser…';
+  let out,name=tool.t+'-result.pdf';
+  const ranges=g('o_ranges')||'';
+  switch(tool.t){
+   case 'merge-pdf':out=await Engine.merge(files);break;
+   case 'split-pdf':case 'split-pdf-by-size':case 'split-pdf-pages-in-half':case 'extract-pages-from-pdf':
+    out=await Engine.copyRange(files[0],ranges);break;
+   case 'remove-pages-from-pdf':out=await Engine.removePages(files[0],ranges);break;
+   case 'rotate-pdf':case 'rotate-pdf-pages-edit':out=await Engine.rotate(files[0],Number(g('o_deg')||90),ranges);break;
+   case 'organize-pdf':out=await Engine.reorder(files[0],ranges);break;
+   case 'reverse-pdf':out=await Engine.reverse(files[0]);break;
+   case 'compress-pdf':case 'optimize-web-pdf':case 'reduce-scan-size':case 'flatten-pdf':out=await Engine.compress(files[0]);break;
+   case 'crop-pdf':case 'clean-scan-margins':out=await Engine.crop(files[0],Number(g('o_margin')||8));break;
+   case 'add-page-numbers':out=await Engine.addNumbers(files[0]);break;
+   case 'resize-pdf-pages':out=await Engine.resizeA4(files[0]);break;
+   case 'edit-metadata':out=await Engine.setMeta(files[0],g('o_title'),g('o_author'));break;
+   case 'watermark-pdf':out=await Engine.watermark(files[0],g('o_wm'));break;
+   case 'pdf-ocr':{
+    const txt=await Engine.ocrPdf(files[0],g('o_lang')||'eng+ara',prog);
+    dl(new Blob([txt],{type:'text/plain;charset=utf-8'}),tool.t+'.txt');showTxt(txt);return}
+   case 'translate-pdf':{
+    const tgt=g('o_tgt')||(L==='ar'?'ar':'en');
+    const r=await Engine.translatePdf(files[0],tgt,prog);
+    dl(new Blob([r.text],{type:'text/plain;charset=utf-8'}),tool.t+'.txt');
+    try{const pdfB=await Engine.htmlToPdfBytes('<h2>Translation ('+r.src+' → '+tgt+')</h2>'+Engine.textToHtml(r.text),/[\u0600-\u06FF]/.test(r.text)?'rtl':'ltr');dl(pdfB,tool.t+'.pdf')}catch(e){}
+    showTxt('['+String(r.src).toUpperCase()+' → '+tgt+']\n\n'+r.text);return}
+   case 'word-to-pdf':case 'odt-to-pdf':case 'rtf-to-pdf':out=await Engine.office2pdf(files[0],prog);break;
+   case 'excel-to-pdf':case 'csv-to-pdf':case 'numbers-to-pdf':out=await Engine.sheet2pdf(files[0],prog);break;
+   case 'ppt-to-pdf':case 'keynote-to-pdf':out=await Engine.ppt2pdf(files[0],prog);break;
+   case 'pdf-to-word':case 'pdf-to-rtf':case 'pdf-to-odt':case 'pdf-to-pages':{
+    const b=await Engine.pdfToDocx(files[0],prog);dl(b,tool.t+'.docx');res.innerHTML='✅ done';return}
+   case 'pdf-to-excel':case 'pdf-to-csv':case 'pdf-to-numbers':{
+    const fmt=g('o_sheetfmt')||'xlsx';
+    const b=await Engine.pdfToSheet(files[0],fmt,prog);
+    dl(b,tool.t+'.'+fmt,fmt==='csv'?'text/csv':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');res.innerHTML='✅ done';return}
+   case 'pdf-to-ppt':case 'pdf-to-keynote':{
+    const b=await Engine.pdfToPptx(files[0],prog);dl(b,tool.t+'.pptx');res.innerHTML='✅ done';return}
+   case 'pdf-to-html':{const b=await Engine.pdfToHtml(files[0]);dl(b,tool.t+'.html','text/html');res.innerHTML='✅ done';return}
+   case 'latex-to-pdf':case 'xml-to-pdf':case 'json-to-pdf':out=await Engine.fileToPdf(files[0]);break;
+   case 'pdf-to-grayscale':case 'pdf-to-grayscale-edit':case 'invert-pdf-colors':case 'pdf-dark-mode':case 'contrast-pdf':case 'enhance-scanned-pdf':case 'pdf-to-scan':
+    out=await Engine.filterPdf(files[0],(window.FILTERS||{})[tool.t]||'grayscale(1)',prog);break;
+   case 'images-to-pdf':case 'jpg-to-pdf':case 'png-to-pdf':case 'tiff-to-pdf':case 'gif-to-pdf':case 'webp-to-pdf':case 'svg-to-pdf':case 'bmp-to-pdf':case 'eps-to-pdf':case 'heic-to-pdf':case 'avif-to-pdf':
+    out=await Engine.images2pdf(files);break;
+   case 'pdf-to-images':case 'pdf-to-jpg':case 'pdf-to-png':case 'pdf-to-tiff':case 'pdf-to-bmp':case 'pdf-to-gif':case 'pdf-to-webp':case 'extract-images-from-pdf':{
+    const imgs=await Engine.pdf2images(files[0],g('o_fmt')||'png',Number(g('o_q')||2));
+    if(imgs.length===1){dl(imgs[0].blob,`page-1.${g('o_fmt')||'png'}`);res.innerHTML=`✅ ${imgs.length} image ready below`;return}
+    const zip=new JSZip();imgs.forEach(x=>zip.file(`page-${x.page}.${g('o_fmt')||'png'}`,x.blob));
+    dl(await zip.generateAsync({type:'uint8array'}),tool.t+'.zip','application/zip');res.innerHTML=`✅ ${imgs.length} images zipped`;return}
+   case 'pdf-to-text':case 'extract-text-from-pdf':case 'pdf-to-markdown':case 'pdf-to-json':{
+    const txt=await Engine.extractText(files[0]);dl(new Blob([txt],{type:'text/plain'}),tool.t+'.txt');showTxt(txt);return}
+   default:
+    if(tool.fn==='merge')out=await Engine.merge(files);
+    else if(tool.fn==='ocr'){const txt=await Engine.ocrPdf(files[0],'eng+ara',prog);dl(new Blob([txt],{type:'text/plain'}),tool.t+'.txt');showTxt(txt);return}
+    else if(tool.fn==='translate'){const r=await Engine.translatePdf(files[0],L==='ar'?'ar':'en',prog);dl(new Blob([r.text],{type:'text/plain'}),tool.t+'.txt');showTxt('['+r.src+' → ]\n\n'+r.text);return}
+    else if(tool.fn==='office2pdf')out=await Engine.office2pdf(files[0],prog);
+    else if(tool.fn==='sheet2pdf')out=await Engine.sheet2pdf(files[0],prog);
+    else if(tool.fn==='ppt2pdf')out=await Engine.ppt2pdf(files[0],prog);
+    else if(tool.fn==='pdf2docx'){const b=await Engine.pdfToDocx(files[0],prog);dl(b,tool.t+'.docx');res.innerHTML='✅ done';return}
+    else if(tool.fn==='pdf2sheet'){const b=await Engine.pdfToSheet(files[0],'xlsx',prog);dl(b,tool.t+'.xlsx');res.innerHTML='✅ done';return}
+    else if(tool.fn==='pdf2pptx'){const b=await Engine.pdfToPptx(files[0],prog);dl(b,tool.t+'.pptx');res.innerHTML='✅ done';return}
+    else if(tool.fn==='pdf2html'){const b=await Engine.pdfToHtml(files[0]);dl(b,tool.t+'.html','text/html');res.innerHTML='✅ done';return}
+    else if(tool.fn==='file2pdf')out=await Engine.fileToPdf(files[0]);
+    else if(tool.fn==='filter')out=await Engine.filterPdf(files[0],'grayscale(1)',prog);
+    else if(tool.fn==='compress')out=await Engine.compress(files[0]);
+    else if(tool.fn==='rotate')out=await Engine.rotate(files[0],90,ranges);
+    else if(tool.fn==='images2pdf')out=await Engine.images2pdf(files);
+    else if(tool.fn==='pdf2images'){const imgs=await Engine.pdf2images(files[0],'png',2);dl(imgs[0].blob,'page-1.png');res.innerHTML='✅ done';return}
+    else if(tool.fn==='text'){const txt=await Engine.extractText(files[0]);dl(new Blob([txt],{type:'text/plain'}),tool.t+'.txt');showTxt(txt);return}
+    else{res.innerHTML=`<div class="notice">${T('needServer')}</div>`;return}
+  }
+  dl(out,name);res.innerHTML=`✅ ${L==='ar'?'تم! اضغط تحميل إذا لم يبدأ تلقائيا':'Done! Click download if it did not start'}`;
+ }catch(e){console.error(e);res.innerHTML=`❌ ${esc(e.message||e)}`}
+};
+function dl(b,name,mime){
+ const blob=b instanceof Blob?b:new Blob([b],{type:mime||'application/pdf'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();
+ res.innerHTML=`✅ <a class="btn" href="${a.href}" download="${name}">${T('download')}</a>`}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+</script>
+</body></html>

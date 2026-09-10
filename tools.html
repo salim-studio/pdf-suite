@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html id="htmlRoot">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>كل أدوات PDF — PDF Suite</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/i18n.js"></script><script src="js/tools-data.js"></script><script src="js/icons.js"></script>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+<a class="logo" href="index.html">PDF<span>Suite</span></a>
+<div class="navlinks"><a href="index.html" data-i="home">الرئيسية</a>
+<button class="langbtn" onclick="setLang(getLang()==='ar'?'en':'ar')" id="langBtn">EN</button></div>
+</div></header>
+<div class="wrap"><section class="section">
+<h2 data-i="allTools">استعراض كل الأدوات</h2>
+<input id="q" class="search" data-i-ph="searchPh" placeholder="ابحث عن أداة…">
+<div class="opts" id="catFilter"></div>
+<div id="list"></div>
+</section></div>
+<footer><div class="wrap"><a href="index.html" data-i="home">الرئيسية</a> · <span data-i="footerNote"></span></div></footer>
+<script>
+const L=getLang();document.getElementById('htmlRoot').lang=L;document.getElementById('htmlRoot').dir=I18N[L].dir;
+document.querySelectorAll('[data-i]').forEach(e=>e.textContent=T(e.dataset.i));
+document.querySelectorAll('[data-i-ph]').forEach(e=>e.placeholder=T(e.dataset.iPh));
+langBtn.textContent=I18N[L].langBtn;
+let active=(location.hash||'').replace('#','')||'all';
+const qp=new URLSearchParams(location.search).get('q')||'';
+q.value=qp;
+function renderCats(){
+ const all=[{id:'all',ar:'الكل',en:'All'},...CATS];
+ catFilter.innerHTML=all.map(c=>`<button class="langbtn" data-c="${c.id}" style="${active===c.id?'background:#2563eb;color:#fff;border-color:#2563eb':''}">${L==='ar'?c.ar:c.en}</button>`).join('');
+ catFilter.querySelectorAll('button').forEach(b=>b.onclick=()=>{active=b.dataset.c;renderCats();render()});
+}
+function render(){
+ const s=q.value.trim();
+ const items=TOOLS.filter(t=>{
+  if(active!=='all'&&t.c!==active)return false;
+  if(!s)return true;
+  return (t.ar+t.en+t.t).includes(s);
+ });
+ let html='',last='';
+ items.forEach(t=>{
+  if(t.c!==last){last=t.c;const c=CATS.find(x=>x.id===t.c);html+=`<h3 style="margin:22px 0 10px">${L==='ar'?c.ar:c.en}</h3><div class="grid">`}
+  const name=L==='ar'?t.ar:t.en,d=L==='ar'?t.arD:t.enD;
+  const pill=t.fn?`<span class="pill ok">⚡ ${T('working')}</span>`:`<span class="pill">${T('demo')}</span>`;
+  html+=`<a class="card" href="tool.html?tool=${t.t}"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px">${MacIcons.tile(t.c,MacIcons.glyphFor(t),40)}<h3 style="margin:0">${name}</h3></div><p>${d}</p>${pill}${t.badge?` <span class="pill new">${t.badge}</span>`:''}</a>`;
+ });
+ list.innerHTML=html+'</div>'||'<p>—</p>';
+}
+q.oninput=render;renderCats();render();
+</script>
+</body></html>
