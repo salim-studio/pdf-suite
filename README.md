@@ -68,14 +68,6 @@ js/icons.js       macOS-style icon system + favicon
 js/i18n.js        English / Arabic strings (default: English)
 ```
 
-## Tech Stack
-
-- [pdf-lib](https://github.com/Hopding/pdf-lib) — create and edit PDFs
-- [pdf.js](https://github.com/mozilla/pdf.js) — render pages, extract text and images
-- [Tesseract.js](https://github.com/naptha/tesseract.js) — in-browser OCR
-- [MyMemory API](https://mymemory.translated.net/) (free) — translation
-- [mammoth](https://github.com/mwilliamson/mammoth.js), [SheetJS](https://sheetjs.com/), [docx](https://github.com/dolanmiu/docx), [PptxGenJS](https://github.com/gitbrent/PptxGenJS), [html2pdf.js](https://github.com/eKoopmans/html2pdf.js) — Office conversions
-
 ## Privacy
 
 All processing happens locally in your browser. The only exception: translation text is sent to the free MyMemory service.
