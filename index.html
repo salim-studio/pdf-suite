@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html id="htmlRoot">
+<html id="htmlRoot" lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PDF Suite — أدوات PDF أونلاين مجانا | i2PDF Clone</title>
+<title>PDF Suite — Free Online PDF Tools | Merge, Split, Compress, Edit</title>
+<meta name="description" content="PDF Suite by Salim Slimani — fast, private, all-in-one PDF toolkit. Merge, split, compress, convert and edit PDFs in your browser.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
 <script src="js/i18n.js"></script>
 <script src="js/tools-data.js"></script>
@@ -14,7 +16,7 @@
 <div id="toolCountTop"></div>
 </div></div>
 <header class="nav"><div class="wrap">
-<a class="logo" href="index.html">PDF<span>Suite</span></a>
+<a class="logo" href="index.html"><img src="assets/logo.svg" alt="PDF Suite logo">PDF<span>Suite</span></a>
 <div class="navlinks">
 <a class="btn ghost" href="tools.html" data-i="ctaTools">تصفح كل الأدوات</a>
 <button class="langbtn" onclick="setLang(getLang()==='ar'?'en':'ar')" id="langBtn">EN</button>
@@ -27,7 +29,8 @@
 <a class="btn" href="tools.html" data-i="ctaStart">ابدأ الآن</a>
 <a class="btn ghost" href="#cats" data-i="sections">أقسام أدوات PDF</a>
 </div>
-<input id="q" class="search" style="max-width:640px;margin:22px auto 0;display:block" data-i-ph="searchPh" placeholder="ابحث عن أداة…">
+<input id="q" class="search" style="max-width:640px;margin:22px auto 0;display:block" data-i-ph="searchPh" placeholder="Search a tool…">
+<div class="brand-hero"><img src="assets/hero.svg" alt="PDF Suite visual — documents and toolkit"></div>
 </div></section>
 
 <div class="wrap">
@@ -38,7 +41,7 @@
 <div class="feat" id="feat1"></div></section>
 <section class="section faq"><h2 data-i="faq">الأسئلة الشائعة</h2><div id="faqBox"></div></section>
 </div>
-<footer><div class="wrap"><b>PDF Suite</b> — <span data-i="footerNote"></span><br><br><a href="index.html" data-i="home">الرئيسية</a> · <a href="tools.html" data-i="allTools">كل الأدوات</a></div></footer>
+<footer><div class="wrap"><div class="footer-brand"><img src="assets/logo.svg" alt="PDF Suite logo"><b>PDF Suite</b> — <span data-i="footerNote"></span></div><br><a href="index.html" data-i="home">Home</a> · <a href="tools.html" data-i="allTools">View all tools</a><br><br><span class="copyright" data-i="copyright">Copyright © 2026 salim-slimani. All rights reserved.</span></div></footer>
 <script>
 const L=getLang();document.getElementById('htmlRoot').lang=L;document.getElementById('htmlRoot').dir=I18N[L].dir;
 document.querySelectorAll('[data-i]').forEach(e=>{e.textContent=T(e.dataset.i)});

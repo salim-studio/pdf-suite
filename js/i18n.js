@@ -17,9 +17,10 @@ ar:{
  process:"تنفيذ", download:"تحميل النتيجة", reset:"إعادة",
  needServer:"هذه الأداة في النسخة الأصلية تحتاج سيرفر (OCR / ترجمة AI / تحويل Office). هذه النسخة تعرض الواجهة كاملة، والمعالجة الحقيقية مفعّلة للأدوات المميزة بشارة (شغّالة).",
  working:"شغّالة داخل المتصفح", demo:"واجهة عرض",
- back:"رجوع", home:"الرئيسية",
- footerNote:"ملفاتك آمنة. المعالجة تتم داخل متصفحك ولا تُرفع لأي سيرفر.",
- langBtn:"EN",
+  back:"رجوع", home:"الرئيسية",
+  footerNote:"ملفاتك آمنة. المعالجة تتم داخل متصفحك ولا تُرفع لأي سيرفر.",
+  copyright:"حقوق النشر © 2026 salim-slimani. جميع الحقوق محفوظة.",
+  langBtn:"EN",
 },
 en:{
  dir:"ltr", langName:"English",
@@ -38,11 +39,12 @@ en:{
  process:"Process", download:"Download result", reset:"Reset",
  needServer:"In the original service this tool needs a server (OCR / AI translate / Office conversion). This clone ships the full UI, and real in-browser processing is enabled for tools badged (working).",
  working:"Works in-browser", demo:"UI demo",
- back:"Back", home:"Home",
- footerNote:"Your files are safe. Processing happens inside your browser, nothing is uploaded.",
- langBtn:"عربي",
-}
+  back:"Back", home:"Home",
+  footerNote:"Your files are safe. Processing happens inside your browser, nothing is uploaded.",
+  copyright:"Copyright © 2026 salim-slimani. All rights reserved.",
+  langBtn:"عربي",
+ }
 };
-window.getLang = function(){ return localStorage.getItem("ps-lang") || "ar"; };
+window.getLang = function(){ return localStorage.getItem("ps-lang") || "en"; };
 window.setLang = function(l){ localStorage.setItem("ps-lang", l); location.reload(); };
 window.T = function(k){ const l = window.getLang(); return (window.I18N[l]&&window.I18N[l][k]) || window.I18N.ar[k] || k; };

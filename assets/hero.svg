@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="PDF Suite hero illustration">
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16233F"/>
+      <stop offset="1" stop-color="#0F1930"/>
+    </linearGradient>
+    <linearGradient id="btn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+  </defs>
+  <g transform="rotate(-8 320 210)" opacity="0.7">
+    <rect x="190" y="60" width="260" height="300" rx="20" fill="#1A2A4D" stroke="#2A3D64" stroke-width="2"/>
+    <rect x="215" y="95" width="150" height="14" rx="7" fill="#2E456E"/>
+    <rect x="215" y="120" width="210" height="10" rx="5" fill="#24365A"/>
+    <rect x="215" y="138" width="210" height="10" rx="5" fill="#24365A"/>
+  </g>
+  <g transform="rotate(8 320 210)" opacity="0.85">
+    <rect x="190" y="60" width="260" height="300" rx="20" fill="#152642" stroke="#38BDF8" stroke-opacity="0.3" stroke-width="2"/>
+    <rect x="215" y="95" width="120" height="14" rx="7" fill="#38BDF8" opacity="0.8"/>
+    <rect x="215" y="125" width="210" height="86" rx="10" fill="#0B1220"/>
+    <polyline points="225,195 265,160 295,175 335,135 375,150 415,110" fill="none" stroke="#22C55E" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <rect x="170" y="50" width="300" height="320" rx="24" fill="url(#card)" stroke="#22C55E" stroke-width="3"/>
+  <rect x="170" y="50" width="300" height="76" rx="24" fill="#FFFFFF"/>
+  <rect x="170" y="90" width="300" height="36" fill="#FFFFFF"/>
+  <path d="M200 62 h28 l16 16 v34 a6 6 0 0 1 -6 6 h-38 a6 6 0 0 1 -6 -6 V68 a6 6 0 0 1 6 -6 Z" fill="#0B1220"/>
+  <rect x="200" y="96" width="38" height="14" rx="4" fill="#EF4444"/>
+  <text x="248" y="80" font-family="Arial" font-size="22" font-weight="bold" fill="#0B1220">PDF Suite</text>
+  <text x="248" y="102" font-family="Arial" font-size="13" fill="#64748B">Private • Fast • Free</text>
+  <g font-family="Arial" font-size="15" fill="#E6EBF5">
+    <rect x="195" y="150" width="250" height="48" rx="12" fill="#0B1220" stroke="#1E2A4A"/>
+    <text x="210" y="179">Merge PDFs →</text>
+    <rect x="195" y="208" width="250" height="48" rx="12" fill="#0B1220" stroke="#1E2A4A"/>
+    <text x="210" y="237">Split • Compress • Protect</text>
+    <rect x="195" y="266" width="250" height="54" rx="12" fill="url(#btn)"/>
+    <text x="320" y="300" font-weight="bold" fill="#04121A" text-anchor="middle">Open Toolkit</text>
+  </g>
+  <g font-family="Arial" font-size="14" font-weight="bold">
+    <rect x="60" y="170" width="110" height="40" rx="20" fill="#22C55E"/>
+    <text x="115" y="196" text-anchor="middle" fill="#04121A">100% Free</text>
+    <rect x="470" y="150" width="130" height="40" rx="20" fill="#38BDF8"/>
+    <text x="535" y="176" text-anchor="middle" fill="#04121A">No Upload</text>
+  </g>
+</svg>

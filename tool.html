@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html id="htmlRoot">
+<html id="htmlRoot" lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tool — PDF Suite</title>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="js/i18n.js"></script><script src="js/tools-data.js"></script><script src="js/icons.js"></script><script src="js/engine.js"></script>
 </head>
 <body>
 <header class="nav"><div class="wrap">
-<a class="logo" href="index.html">PDF<span>Suite</span></a>
+<a class="logo" href="index.html"><img src="assets/logo.svg" alt="PDF Suite logo">PDF<span>Suite</span></a>
 <div class="navlinks"><a href="tools.html">← <span data-i="back">رجوع</span></a>
 <button class="langbtn" onclick="setLang(getLang()==='ar'?'en':'ar')" id="langBtn">EN</button></div>
 </div></header>
@@ -25,7 +26,7 @@
 </div>
 <div class="result" id="res"></div>
 </section></div>
-<footer><div class="wrap"><span data-i="footerNote"></span></div></footer>
+<footer><div class="wrap"><div class="footer-brand"><img src="assets/logo.svg" alt="PDF Suite logo"><span data-i="footerNote"></span></div><br><span class="copyright" data-i="copyright">Copyright © 2026 salim-slimani. All rights reserved.</span></div></footer>
 <script>
 const L=getLang();document.getElementById('htmlRoot').lang=L;document.getElementById('htmlRoot').dir=I18N[L].dir;
 document.querySelectorAll('[data-i]').forEach(e=>e.textContent=T(e.dataset.i));
