@@ -18,7 +18,7 @@ Merge, split, compress, convert and edit PDFs — 100% in your browser.</p>
   <img src="https://img.shields.io/badge/language-English-blue" alt="English"/>
 </p>
 
-<p align="center">🌐 <strong>Live demo:</strong> <a href="[https://salim-studio.github.io/pdf-suite](https://pdf-suite-puqb.vercel.app/)/">https://salim-studio.github.io/pdf-suite/</a></p>
+<p align="center">🌐 <strong>Live demo:</strong> <a href="https://pdf-suite-puqb.vercel.app/)/">https://salim-studio.github.io/pdf-suite/</a></p>
 
 ---
 
